@@ -73,8 +73,15 @@ for(var p=0;p<sns.length;p++){
 
 
 function checkWin(){
+  winner=-1;
 for(var pp=0;pp<points.length;pp++){
+
   if(points[pp]>=TO_SCORE){
+    if(winner==-1){
+    winner=pp;}else{
+      winner=-2;
+      TO_SCORE+=1;
+    }
     win="";
     switch(pp){
       case 0:
@@ -91,14 +98,19 @@ for(var pp=0;pp<points.length;pp++){
       break;
 
     }
-    stroke(0);
-    fill([240,240,240]);
-    textSize(40);
-    textAlign(LEFT,TOP);
-    text(win + ' wins!', width/2-100, 300, width);
-    noLoop();
+
   }
+  if(winner>=0){
+  stroke(0);
+  fill([240,240,240]);
+  textSize(40);
+  textAlign(LEFT,TOP);
+  text(win + ' wins!', width/2-100, 300, width);
+  noLoop();}
 }
+
+
+
 }
 
 function keyPressed(){
@@ -249,7 +261,7 @@ for(var j=0;j<sns.length;j++){
           //audio['eaten'].play();
           checkWin();
         //console.log('1 point added!');
-      }
+        }
       }
     }
   }
