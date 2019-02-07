@@ -13,7 +13,7 @@ function setup() {
   //audio["background"].play();
   //s=new Snake(0,0);
   //sns=[new Snake(30,30,[50,80,240]),new Snake(width-30,30,[230,60,60])];
-  pattern=[new Snake(30,40,[50,80,240]),new Snake(width-30,40,[230,60,60]) ,new Snake(width/2,40,[50,240,70]) ];
+  pattern=[new Snake(30,50,[50,80,240]),new Snake(width-30,50,[230,60,60]) ,new Snake(width/2,50,[50,240,70]) ];
   //                                                                           third player solution
   sns=[];
 
@@ -41,14 +41,14 @@ function draw() {
   noStroke();
   fill([50,80,240]);
   textAlign(LEFT, TOP);
-  text('Blue: ' + points[0], 12, 12, 70);
+  text('Blue: ' + points[0] + '/' + TO_SCORE, 12, 12, 70);
   fill([230,60,60]);
   textAlign(LEFT, TOP);
-  text('Red: ' + points[1], width-65, 12, 70);
+  text('Red: ' + points[1] + '/' + TO_SCORE, width-45, 12, 70);
   if(sns.length>2){
   fill([50,240,70]);
   textAlign(LEFT, TOP);
-  text('Green: ' + points[2], width/2-30, 12, 70);}
+  text('Green: ' + points[2] + '/' + TO_SCORE, width/2-30, 12, 70);}
   noFill();
   stroke(255);
   textSize(26);
