@@ -6,9 +6,11 @@ audio["background"].addEventListener('ended', function() {
 var TO_SCORE=10;
 function setup() {
   createCanvas(600,600);
+
   audio["background"].volume=0.1;
   audio["wallhit"].volume=0.5;
-  audio["background"].play();
+  audio.volume=0;
+  //audio["background"].play();
   //s=new Snake(0,0);
   //sns=[new Snake(30,30,[50,80,240]),new Snake(width-30,30,[230,60,60])];
   pattern=[new Snake(30,40,[50,80,240]),new Snake(width-30,40,[230,60,60]) ,new Snake(width/2,40,[50,240,70]) ];
@@ -17,10 +19,13 @@ function setup() {
   sns=[];
   sns[0]=$.extend( true, {}, pattern[0]);
   sns[1]=$.extend( true, {}, pattern[1]);
-  //sns[2]=$.extend( true, {}, pattern[2]);
+  sns[2]=$.extend( true, {}, pattern[2]);
 //  n=new Snake(10,0);
 
   frameRate(15);
+  noLoop();
+  console.log("Press \'P\' key to start");
+
 }
 
 var points=[0,0,0];
@@ -82,8 +87,8 @@ if(keyCode===UP_ARROW ){
 }else if (keyCode===LEFT_ARROW ) {
   sns[1].dir(-1,0);
 }
-if(key=='+'){
-  sns[1].inc();
+if(key=='p' || key=='з'){
+  loop();
 //  n.inc();
 }
 
@@ -165,8 +170,13 @@ this.history[this.total-1]=createVector(this.x,this.y);
         sns[k].history=[];
         sns[k].total=14;
         sns[k]=$.extend( true, {}, pattern[k]);
-        audio['wallhit'].play();
-      }}}
+      //  audio['wallhit'].play();
+
+    }else
+      {
+        points[k]+=1;
+      }
+    }}
 
 }
 
@@ -199,7 +209,7 @@ for(var j=0;j<sns.length;j++){
       //this.total=this.total+1;
       for(var k=0;k<sns.length;k++){
         if(sns[k].color==this.color){points[k]+=1;
-          audio['eaten'].play();
+          //audio['eaten'].play();
           for(var pp=0;pp<points.length;pp++){
             if(points[pp]>=TO_SCORE){
               win="";
