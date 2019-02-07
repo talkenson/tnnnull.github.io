@@ -66,6 +66,37 @@ for(var p=0;p<sns.length;p++){
   //console.log(rotationX);
 }
 
+
+
+function checkWin(){
+for(var pp=0;pp<points.length;pp++){
+  if(points[pp]>=TO_SCORE){
+    win="";
+    switch(pp){
+      case 0:
+      win='Blue';
+      break;
+      case 1:
+      win='Red';
+      break;
+      case 2:
+      win='Green';
+      break;
+      default:
+      win="ne znau kto"
+      break;
+
+    }
+    stroke(0);
+    fill([240,240,240]);
+    textSize(40);
+    textAlign(LEFT,TOP);
+    text(win + ' wins!', width/2-100, 300, width);
+    noLoop();
+  }
+}
+}
+
 function keyPressed(){
   /*
 if(keyCode===UP_ARROW || key=='w'){
@@ -175,6 +206,7 @@ this.history[this.total-1]=createVector(this.x,this.y);
     }else
       {
         points[k]+=1;
+        checkWin();
       }
     }}
 
@@ -210,32 +242,7 @@ for(var j=0;j<sns.length;j++){
       for(var k=0;k<sns.length;k++){
         if(sns[k].color==this.color){points[k]+=1;
           //audio['eaten'].play();
-          for(var pp=0;pp<points.length;pp++){
-            if(points[pp]>=TO_SCORE){
-              win="";
-              switch(pp){
-                case 0:
-                win='Blue';
-                break;
-                case 1:
-                win='Red';
-                break;
-                case 2:
-                win='Green';
-                break;
-                default:
-                win="ne znau kto"
-                break;
-
-              }
-              stroke(0);
-              fill([240,240,240]);
-              textSize(40);
-              textAlign(LEFT,TOP);
-              text(win + ' wins!', width/2-100, 300, width);
-              noLoop();
-            }
-          }
+          checkWin();
         //console.log('1 point added!');
       }
       }
