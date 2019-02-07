@@ -15,16 +15,20 @@ function setup() {
   //sns=[new Snake(30,30,[50,80,240]),new Snake(width-30,30,[230,60,60])];
   pattern=[new Snake(30,40,[50,80,240]),new Snake(width-30,40,[230,60,60]) ,new Snake(width/2,40,[50,240,70]) ];
   //                                                                           third player solution
-
   sns=[];
-  sns[0]=$.extend( true, {}, pattern[0]);
-  sns[1]=$.extend( true, {}, pattern[1]);
-  //sns[2]=$.extend( true, {}, pattern[2]);
+
 //  n=new Snake(10,0);
 
   frameRate(15);
   noLoop();
   console.log("Press \'P\' key to start");
+
+}
+function startGame(){
+  points=[0,0,0];
+  sns[0]=$.extend( true, {}, pattern[0]);
+  sns[1]=$.extend( true, {}, pattern[1]);
+  //sns[2]=$.extend( true, {}, pattern[2]);
 
 }
 
@@ -119,6 +123,7 @@ if(keyCode===UP_ARROW ){
   sns[1].dir(-1,0);
 }
 if(key=='p' || key=='з'){
+  startGame();
   loop();
 //  n.inc();
 }
@@ -231,7 +236,7 @@ for(var j=0;j<sns.length;j++){
   if(sns[j].color!==this.color){
   for(var i=0;i<this.history.length;i++){
     var pos=this.history[i];
-    var d=dist(pos.x,pos.y,sns[j].x,sns[j].y);
+    var d=min(dist(pos.x,pos.y,sns[j].x,sns[j].y),dist(this.x,this.y,sns[j].x,sns[j].y));
     if(d<1){
       //console.log('Snake ' + j + ' died! (0-blue, 1-red, 2-green)');
       sns[j].history=[];
