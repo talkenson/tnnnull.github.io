@@ -19,7 +19,7 @@ function setup() {
   sns=[];
   sns[0]=$.extend( true, {}, pattern[0]);
   sns[1]=$.extend( true, {}, pattern[1]);
-  sns[2]=$.extend( true, {}, pattern[2]);
+  //sns[2]=$.extend( true, {}, pattern[2]);
 //  n=new Snake(10,0);
 
   frameRate(15);
