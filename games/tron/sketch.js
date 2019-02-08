@@ -4,12 +4,15 @@ audio["background"].addEventListener('ended', function() {
     this.play();
 }, false);
 var TO_SCORE=10;
+var START_LENGTH=80;
+var FRAME_RATE=15;
+
 function setup() {
-  createCanvas(600,600);
+  createCanvas(1000,600);
 
   audio["background"].volume=0.1;
   audio["wallhit"].volume=0.5;
-  audio.volume=0;
+  //audio.volume=0;
   //audio["background"].play();
   //s=new Snake(0,0);
   //sns=[new Snake(30,30,[50,80,240]),new Snake(width-30,30,[230,60,60])];
@@ -19,7 +22,7 @@ function setup() {
 
 //  n=new Snake(10,0);
 
-  frameRate(15);
+  frameRate(FRAME_RATE);
   noLoop();
   console.log("Press \'P\' key to start");
 
@@ -43,19 +46,20 @@ function draw() {
   textAlign(LEFT, TOP);
   text('Blue: ' + points[0] + '/' + TO_SCORE, 12, 12, 70);
   fill([230,60,60]);
-  textAlign(LEFT, TOP);
-  text('Red: ' + points[1] + '/' + TO_SCORE, width-45, 12, 70);
+  textAlign(RIGHT, TOP);
+  text('Red: ' + points[1] + '/' + TO_SCORE, width-75, 12, 70);
   if(sns.length>2){
   fill([50,240,70]);
   textAlign(LEFT, TOP);
-  text('Green: ' + points[2] + '/' + TO_SCORE, width/2-30, 12, 70);}
+  text('Green: ' + points[2] + '/' + TO_SCORE, width/2-30, 12, 70);
+  }
   noFill();
   stroke(255);
   textSize(26);
   textAlign(BOTTOM);
   //text('SNAKE', width/2-50, 50, 100);
   stroke(0);
-
+checkWin();
 for(var p=0;p<sns.length;p++){
     sns[p].death();
     sns[p].update();
@@ -69,75 +73,74 @@ for(var p=0;p<sns.length;p++){
   //frameRate(frameCount+1);
   //console.log(rotationX);
 }
+/*
+function Wall(){
 
 
-
+}
+*/
 function checkWin(){
-  winner=-1;
+winner=-1;
 for(var pp=0;pp<points.length;pp++){
-
   if(points[pp]>=TO_SCORE){
     if(winner==-1){
     winner=pp;}else{
       winner=-2;
-      TO_SCORE+=1;
+      //TO_SCORE+=1;
+      stroke(0);
+      fill([240,240,240]);
+      textSize(40);
+      textAlign(LEFT,TOP);
+      text('Draw!', width/2-50, 300, width);
+      noLoop();
+      return;
     }
+    console.log(winner);
     win="";
     switch(pp){
-      case 0:
-      win='Blue';
-      break;
-      case 1:
-      win='Red';
-      break;
-      case 2:
-      win='Green';
-      break;
-      default:
-      win="ne znau kto"
-      break;
-
+      case 0: win='Blue'; break;
+      case 1: win='Red';  break;
+      case 2: win='Green';break;
+      default:win="No one";break;
     }
-
   }
-  if(winner>=0){
-  stroke(0);
-  fill([240,240,240]);
-  textSize(40);
-  textAlign(LEFT,TOP);
-  text(win + ' wins!', width/2-100, 300, width);
-  noLoop();}
+}
+if(winner>=0){
+  console.log("Winning" + winner);
+stroke(0);
+fill([240,240,240]);
+textSize(40);
+textAlign(LEFT,TOP);
+text(win + ' wins!', width/2-100, 300, width);
+noLoop();
+
 }
 
 
-
 }
-
+var direction={0:dir(1,0),1:dir(0,1),2:dir(-1,0),3:dir(0,-1)};
 function keyPressed(){
-  /*
-if(keyCode===UP_ARROW || key=='w'){
-  s.dir(0,-1);
-}else if (keyCode===DOWN_ARROW || key=='s') {
-  s.dir(0,1);
-}else if (keyCode===RIGHT_ARROW || key=='d') {
-  s.dir(1,0);
-}else if (keyCode===LEFT_ARROW || key=='a') {
-  s.dir(-1,0);
-}*/
-//console.log(key);
+
 if(keyCode===UP_ARROW ){
   sns[1].dir(0,-1);
 }else if (keyCode===DOWN_ARROW ) {
   sns[1].dir(0,1);
-}else if (keyCode===RIGHT_ARROW ) {
+}else
+if (keyCode===RIGHT_ARROW ) {
+  //sns[1].direction[(sns[1].dirct+1)%4];
   sns[1].dir(1,0);
 }else if (keyCode===LEFT_ARROW ) {
+  //sns[1].dir([-1,0]);
   sns[1].dir(-1,0);
 }
 if(key=='p' || key=='з'){
   startGame();
   loop();
-//  n.inc();
+
+}
+if(key=='*'){
+  noLoop();
+
 }
 
 if(key=='w' || key=='ц'){
@@ -162,18 +165,7 @@ if(key=='u' || key=='г'){
 
 }
 
-function Eat(){
-  this.x=0;
-  this.y=0;
-  this.size=10;
 
-  this.generate=function(){
-
-
-  }
-
-
-}
 
 function Snake(x=0,y=0,color=[255,255,255]){
 this.x=x;
@@ -182,11 +174,13 @@ this.size=10;
 this.xspeed=0;
 this.yspeed=1;
 this.history=[];
-this.total=14;
+this.total=START_LENGTH;
 this.color=color;
+this.dirct=1;
+this.minCols=2;
 
 this.update=function(){
-  //console.log(this.history.length);
+
 
   if(this.total === this.history.length){
     for(var i=0;i<this.history.length-1;i++){
@@ -196,8 +190,9 @@ this.update=function(){
 //console.log(this.history.length);
 
 if(this.total - this.history.length > 0){
-  for(var i=0;i<this.total;i++){
-  //this.history[i]=this;
+  var lp=this.total-this.history.length;
+  for(var i=0;i<lp;i++){
+
   append(this.history,this);
 }
 }
@@ -218,14 +213,18 @@ this.history[this.total-1]=createVector(this.x,this.y);
         sns[k].history=[];
         sns[k].total=14;
         sns[k]=$.extend( true, {}, pattern[k]);
-      //  audio['wallhit'].play();
+        audio['wallhit'].play();
 
     }else
       {
         points[k]+=1;
-        checkWin();
+
       }
-    }}
+    }
+    //console.log("HITTED");
+
+
+  }
 
 }
 
@@ -243,6 +242,29 @@ this.death=function(){
 
   }
 }*/
+var cols=0;
+for(var i=1;i<this.history.length;i++){
+  var pos=this.history[i];
+  if(dist(this.x,this.y,pos.x,pos.y)<1){
+    //console.log("self");
+    cols++;
+  }
+}
+
+if((cols>1)){this.minCols=1;}
+if((cols<this.minCols)){this.minCols=cols;}
+//console.log(cols, this.minCols);
+if((cols==1) && (this.minCols==0)){
+  //console.log("Eated by self");
+  for(var k=0;k<sns.length;k++){
+    if(sns[k].color==this.color){
+      sns[k].history=[];
+      sns[k].total=START_LENGTH;
+      sns[k]=$.extend( true, {}, pattern[k]);
+    }
+  }
+
+}
 
 for(var j=0;j<sns.length;j++){
   if(sns[j].color!==this.color){
@@ -251,14 +273,18 @@ for(var j=0;j<sns.length;j++){
     var d=min(dist(pos.x,pos.y,sns[j].x,sns[j].y),dist(this.x,this.y,sns[j].x,sns[j].y));
     if(d<1){
       //console.log('Snake ' + j + ' died! (0-blue, 1-red, 2-green)');
+      var sl=sns[j].total;
       sns[j].history=[];
-      sns[j].total=14;
+      sns[j].total=START_LENGTH;
       sns[j]=$.extend( true, {}, pattern[j]);
       //sns[j]=pattern[j];
-      //this.total=this.total+1;
+      for(var nl=0;nl<sl;nl++){
+        this.inc();
+      }
+
       for(var k=0;k<sns.length;k++){
         if(sns[k].color==this.color){points[k]+=1;
-          //audio['eaten'].play();
+          audio['eaten'].play();
           checkWin();
         //console.log('1 point added!');
         }
@@ -275,13 +301,17 @@ for(var j=0;j<sns.length;j++){
 
 this.show=function(){
 
-
   fill(this.color);
+  /*if(this.total<this.history.length){
+    for(var i=0;i<(this.history.length-this.total);i++){
+        pop(this.history);
+    }
+
+  }*/
   if(this.total===this.history.length){
-  for(var i=0;i<this.total;i++){
+  for(var i=0;i<this.history.length;i++){
       rect(this.history[i].x,this.history[i].y,this.size,this.size);
   }}
-
   rect(this.x,this.y,this.size,this.size);
 }
 
@@ -296,7 +326,12 @@ this.dir=function(x,y){
 this.inc=function(){
   //append(this.history,new Snake(this.x,this.y));
   this.total++;
-
+  var lp=this.total-this.history.length;
+  for(var i=0;i<lp;i++){
+  //this.history[i]=this;
+  append(this.history,this);
+  }
+  //append(this.history,this);
 }
 
 
