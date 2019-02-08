@@ -6,6 +6,7 @@ audio["background"].addEventListener('ended', function() {
 var TO_SCORE=10;
 var START_LENGTH=80;
 var FRAME_RATE=15;
+var PLAYERS=2;
 
 function setup() {
   createCanvas(1000,600);
@@ -29,9 +30,9 @@ function setup() {
 }
 function startGame(){
   points=[0,0,0];
-  sns[0]=$.extend( true, {}, pattern[0]);
-  sns[1]=$.extend( true, {}, pattern[1]);
-  //sns[2]=$.extend( true, {}, pattern[2]);
+  for(var pls=0;pls<PLAYERS;pls++){
+  sns[pls]=$.extend( true, {}, pattern[pls]);
+}
 
 }
 
