@@ -4,17 +4,18 @@ audio["background"].addEventListener('ended', function() {
     this.play();
 }, false);
 var TO_SCORE=10;
-var START_LENGTH=80;
+var START_LENGTH=14;
 var FRAME_RATE=15;
 var PLAYERS=2;
-
+var isPlaying=false;
+var drawWin=false;
 function setup() {
   createCanvas(1000,600);
 
-  audio["background"].volume=0.1;
-  audio["wallhit"].volume=0.5;
+  audio["background"].volume=0.3;
+  audio["wallhit"].volume=0.3;
   //audio.volume=0;
-  //audio["background"].play();
+  audio["background"].play();
   //s=new Snake(0,0);
   //sns=[new Snake(30,30,[50,80,240]),new Snake(width-30,30,[230,60,60])];
   pattern=[new Snake(30,50,[50,80,240]),new Snake(width-30,50,[230,60,60]) ,new Snake(width/2,50,[50,240,70]) ];
@@ -24,8 +25,9 @@ function setup() {
 //  n=new Snake(10,0);
 
   frameRate(FRAME_RATE);
-  noLoop();
-  console.log("Press \'P\' key to start");
+//  noLoop();
+  //console.log("Press \'P\' key to start");
+
 
 }
 function startGame(){
@@ -39,6 +41,7 @@ function startGame(){
 var points=[0,0,0];
 
 function draw() {
+  //console.log(isPlaying);
   background(51);
   textSize(16);
 
@@ -46,9 +49,10 @@ function draw() {
   fill([50,80,240]);
   textAlign(LEFT, TOP);
   text('Blue: ' + points[0] + '/' + TO_SCORE, 12, 12, 70);
+  if(sns.length>1){
   fill([230,60,60]);
   textAlign(RIGHT, TOP);
-  text('Red: ' + points[1] + '/' + TO_SCORE, width-75, 12, 70);
+  text('Red: ' + points[1] + '/' + TO_SCORE, width-75, 12, 70);}
   if(sns.length>2){
   fill([50,240,70]);
   textAlign(LEFT, TOP);
@@ -60,19 +64,26 @@ function draw() {
   textAlign(BOTTOM);
   //text('SNAKE', width/2-50, 50, 100);
   stroke(0);
+  if(isPlaying){
 checkWin();
 for(var p=0;p<sns.length;p++){
     sns[p].death();
     sns[p].update();
     sns[p].show();
 }
+}else{
 
-//  s.update();
-//  s.show();
-//  n.update();
-//  n.show();
-  //frameRate(frameCount+1);
-  //console.log(rotationX);
+  fill(255);
+  textAlign(CENTER, TOP);
+
+  text('Players: ' + PLAYERS + ' (1/2/3)',0, 200, width);
+  text('Score to win: ' + TO_SCORE + ' (+/-)', 0, 240, width);
+  textSize(18);
+  text('Press \'P\' to start', 0, 300, width);
+
+}
+
+
 }
 /*
 function Wall(){
@@ -96,7 +107,7 @@ for(var pp=0;pp<points.length;pp++){
       noLoop();
       return;
     }
-    console.log(winner);
+    //console.log(winner);
     win="";
     switch(pp){
       case 0: win='Blue'; break;
@@ -107,19 +118,21 @@ for(var pp=0;pp<points.length;pp++){
   }
 }
 if(winner>=0){
-  console.log("Winning" + winner);
+  //console.log("Winning" + winner);
 stroke(0);
 fill([240,240,240]);
 textSize(40);
 textAlign(LEFT,TOP);
-text(win + ' wins!', width/2-100, 300, width);
+//isPlaying=false;
 noLoop();
+text(win + ' wins!', width/2-100, 300, width);
+
 
 }
 
 
 }
-var direction={0:dir(1,0),1:dir(0,1),2:dir(-1,0),3:dir(0,-1)};
+//var direction={0:dir(1,0),1:dir(0,1),2:dir(-1,0),3:dir(0,-1)};
 function keyPressed(){
 
 if(keyCode===UP_ARROW ){
@@ -137,11 +150,31 @@ if (keyCode===RIGHT_ARROW ) {
 if(key=='p' || key=='з'){
   startGame();
   loop();
+  isPlaying=true;
+
 
 }
 if(key=='*'){
   noLoop();
 
+}
+if(!isPlaying){
+  if(key=='+'){
+    TO_SCORE=(TO_SCORE)%30+1;
+  }
+  if(key=='-'){
+    if(TO_SCORE==1){TO_SCORE=30;}else{TO_SCORE--;}
+  }
+
+  if(key=='3'){
+    PLAYERS=3;
+  }
+  if(key=='2'){
+    PLAYERS=2;
+  }
+  if(key=='1'){
+    PLAYERS=1;
+  }
 }
 
 if(key=='w' || key=='ц'){
@@ -262,6 +295,7 @@ if((cols==1) && (this.minCols==0)){
       sns[k].history=[];
       sns[k].total=START_LENGTH;
       sns[k]=$.extend( true, {}, pattern[k]);
+      audio['eaten'].play();
     }
   }
 
