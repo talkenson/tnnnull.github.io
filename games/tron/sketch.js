@@ -46,6 +46,7 @@ function draw() {
   textSize(16);
 
   noStroke();
+  noSmooth();
   fill([50,80,240]);
   textAlign(LEFT, TOP);
   text('Blue: ' + points[0] + '/' + TO_SCORE, 12, 12, 70);
@@ -63,6 +64,7 @@ function draw() {
   textSize(26);
   textAlign(BOTTOM);
   //text('SNAKE', width/2-50, 50, 100);
+  smooth();
   stroke(0);
   if(isPlaying){
 checkWin();
@@ -210,10 +212,12 @@ this.yspeed=1;
 this.history=[];
 this.total=START_LENGTH;
 this.color=color;
-this.dirct=1;
+//this.dirct=1;
 this.minCols=2;
 
 this.update=function(){
+
+
 
 
   if(this.total === this.history.length){
@@ -227,11 +231,12 @@ if(this.total - this.history.length > 0){
   var lp=this.total-this.history.length;
   for(var i=0;i<lp;i++){
 
-  append(this.history,this);
+  this.history.push(this);//append from head
+  //append(this.history,this.history.slice(-1));//append from tail
 }
 }
 
-this.history[this.total-1]=createVector(this.x,this.y);
+this.history[this.history.length-1]=createVector(this.x,this.y);
   //this.history.forEach(function(){});
   this.x+=this.xspeed*this.size;
   this.y+=this.yspeed*this.size;
@@ -245,8 +250,16 @@ this.history[this.total-1]=createVector(this.x,this.y);
     for(var k=0;k<sns.length;k++){
       if(sns[k].color==this.color){
         sns[k].history=[];
-        sns[k].total=14;
+
+        let nlen;
+        if(sns[k].total>=28){
+          nlen=Math.floor(sns[k].total/2);
+        }else{
+          nlen=14;
+        }
         sns[k]=$.extend( true, {}, pattern[k]);
+        sns[k].total=nlen;
+
         audio['wallhit'].play();
 
     }else
@@ -293,8 +306,15 @@ if((cols==1) && (this.minCols==0)){
   for(var k=0;k<sns.length;k++){
     if(sns[k].color==this.color){
       sns[k].history=[];
-      sns[k].total=START_LENGTH;
+
+      let nlen;
+      if(sns[k].total>=28){
+        nlen=Math.floor(sns[k].total/2);
+      }else{
+        nlen=14;
+      }
       sns[k]=$.extend( true, {}, pattern[k]);
+      sns[k].total=nlen;
       audio['eaten'].play();
     }
   }
@@ -308,10 +328,17 @@ for(var j=0;j<sns.length;j++){
     var d=min(dist(pos.x,pos.y,sns[j].x,sns[j].y),dist(this.x,this.y,sns[j].x,sns[j].y));
     if(d<1){
       //console.log('Snake ' + j + ' died! (0-blue, 1-red, 2-green)');
-      var sl=sns[j].total;
+      var sl=Math.floor(sns[j].total/2);
       sns[j].history=[];
-      sns[j].total=START_LENGTH;
+
+      let nlen;
+      if(sns[j].total>=28){
+        nlen=Math.floor(sns[j].total/2);
+      }else{
+        nlen=14;
+      }
       sns[j]=$.extend( true, {}, pattern[j]);
+      sns[j].total=nlen;
       //sns[j]=pattern[j];
       for(var nl=0;nl<sl;nl++){
         this.inc();
@@ -343,6 +370,12 @@ this.show=function(){
     }
 
   }*/
+
+  /*if(this.color[2]==240){
+  console.log('Blue total: ' + this.total + ', length: ' + this.history.length);
+}*/
+
+
   if(this.total===this.history.length){
   for(var i=0;i<this.history.length;i++){
       rect(this.history[i].x,this.history[i].y,this.size,this.size);
@@ -364,7 +397,8 @@ this.inc=function(){
   var lp=this.total-this.history.length;
   for(var i=0;i<lp;i++){
   //this.history[i]=this;
-  append(this.history,this);
+  //append(this.history,this);//append from head
+  this.history.push(this.history[this.history.length-1]);//append from tail
   }
   //append(this.history,this);
 }
